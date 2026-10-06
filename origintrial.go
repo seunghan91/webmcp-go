@@ -1,6 +1,3 @@
-// Package webmcp provides framework-agnostic WebMCP manifest v1 definitions,
-// safe template helpers, Origin-Trial middleware and an embedded browser runtime.
-// The server's existing endpoints remain the authorization and CSRF boundary.
 package webmcp
 
 import (

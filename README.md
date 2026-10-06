@@ -38,6 +38,8 @@ Chrome 154 by the [Ruby reference suite](https://github.com/seunghan91/webmcp/bl
 All four emit the same manifest v1 (checked against shared conformance fixtures,
 fingerprints included) and ship the byte-identical browser runtime.
 
+Coding agents: start with [AGENTS.md](AGENTS.md). LLM summary: [llms.txt](llms.txt).
+
 ## Intent: share identity, project the rest explicitly
 
 **Surfaces are intentionally different; share identity, project the rest explicitly.**
@@ -207,6 +209,26 @@ meta := webmcp.OriginTrialMetaTag(token)
 The opt-in warning logs once per wrapped handler for `Origin-Agent-Cluster: ?0`.
 It never rewrites that header or forces `?1`. The meta helper escapes the token
 and returns empty markup for an empty token.
+
+## Troubleshooting
+
+| Symptom (exact text) | Cause | Fix |
+|---|---|---|
+| `document.modelContext` is `undefined` | WebMCP is unavailable or the page is not a secure context | Chrome 149+ with the origin trial token (header or `<meta http-equiv="origin-trial">`) or `chrome://flags/#enable-webmcp-testing`; serve over HTTPS or localhost |
+| `NotAllowedError` from `registerTool` | The document may not use the `tools` Permissions Policy feature (default allowlist `self`) | For cross-origin frames delegate with `allow="tools"` and make sure ancestor `Permissions-Policy` headers permit it |
+| `UnknownError: Failed to parse input arguments` from `executeTool` | Chrome 154 and earlier accept only a JSON **string** input; object input ships in Chrome 155 | Agent side: pass `JSON.stringify(input)` on Chrome ≤ 154. The runtime's `execute` receives an object either way |
+| `SecurityError` from `registerTool` on an older trial build | The response sent `Origin-Agent-Cluster: ?0` (requirement removed from the spec on 2026-09-30, still enforced by older builds) | Stop sending `?0`; enable the OAC opt-out warning to find it |
+| Console: `WebMCP: could not register tool "<name>"` with `InvalidStateError` | Another script in the same document already registered that name | Use unique names; names are unique per document, not per site |
+| Console: `WebMCP: unsupported manifest version; no tools registered.` | Runtime and manifest come from different package versions | Upgrade so both use manifest v1 and the same runtime |
+| Tool result `error.code: "csrf_token_missing"` | A non-GET tool (including a read-only POST) has CSRF transport configured but no readable token on the page | Render the configured token (Rails `csrf_meta_tags`, Django `{% webmcp_csrf_meta %}`, Go/Rust: your own escaped `<meta name="csrf-token">`) or configure a readable cookie source. Without CSRF transport the runtime skips this check |
+| `error.code: "invalid_input"` | The agent sent an undeclared parameter, a missing required one, or the wrong scalar type | Fix the schema or descriptions; the runtime forwards declared parameters only |
+| `error.code: "unknown_outcome"` | A write request failed after dispatch: network error, abort, or a **redirect** (redirects are never followed) | Make the endpoint answer without redirecting (e.g. 401 JSON instead of redirecting to sign-in); never retry automatically |
+| `error.code: "network_error"` on a read | Network failure or redirect rejection after dispatch (an aborted read returns `aborted`) | Check connectivity and answer JSON without redirects; reads may be retried |
+| `error.code: "response_too_large"` | Read response exceeded `maxResponseChars` | Narrow the query or raise the limit; responses are never truncated |
+| `dataOmitted: "invalid_response"` on a write | The endpoint returned 2xx with a non-JSON body | Return JSON from write endpoints |
+| Tools from the previous page remain, or none appear, after client-side navigation | Turbo is handled automatically; other SPAs (Inertia, React routers) are not | After the SPA replaces or removes `#webmcp-manifest`, `await WebMCPRuntime.handle.refresh()`. `webmcp:mounted` only delivers the initial handle. If the first page has no manifest, mount the runtime from your app entry (`mount()`) and keep that handle |
+| A string-returning tool yields `hi` instead of `"hi"` | Chrome 154 does not JSON-quote string results (spec says it should) | The shared runtime always returns an envelope object, so this only affects hand-written tools |
+| Definition error at boot such as `GET endpoints require read_only: true` | The definition violates a rule above | Fix the definition; errors are raised at boot on purpose |
 
 ## Security model
 

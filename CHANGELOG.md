@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2 — 2026-10-06
+
+- Documentation for people and AI agents: package overview in `doc.go` (shown on pkg.go.dev), runnable `Example` tests, `AGENTS.md`, `llms.txt`, and a README troubleshooting table with exact error messages. No behaviour changes.
+
 ## 0.2.1 — 2026-10-06
 
 - Documentation: README leads with what the module does, install, status and the four-package family; badges and CI. No code changes.
