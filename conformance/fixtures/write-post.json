@@ -1,0 +1,67 @@
+{
+  "definition": {
+    "name": "create_task",
+    "title": "Create task",
+    "description": "Create one task.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 120
+        }
+      },
+      "required": [
+        "title"
+      ]
+    },
+    "annotations": {
+      "consequential": true,
+      "debugging": false
+    },
+    "endpoint": {
+      "path": "/api/tasks",
+      "method": "post",
+      "param_map": {
+        "title": "content"
+      }
+    },
+    "max_response_chars": 1500
+  },
+  "transport": {
+    "csrf": {
+      "source": "meta",
+      "name": "csrf-token",
+      "header": "X-CSRF-Token"
+    }
+  },
+  "expected": {
+    "name": "create_task",
+    "title": "Create task",
+    "description": "Create one task.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 120
+        }
+      },
+      "required": [
+        "title"
+      ]
+    },
+    "annotations": {
+      "consequentialHint": true
+    },
+    "endpoint": {
+      "path": "/api/tasks",
+      "method": "POST",
+      "paramMap": {
+        "title": "content"
+      }
+    },
+    "maxResponseChars": 1500,
+    "fingerprint": "sha256:bc6e6c1c3aae5362177623f8a0c64919989236bb24571bc6d76a24054d4ca66c"
+  }
+}

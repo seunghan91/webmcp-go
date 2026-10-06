@@ -1,0 +1,72 @@
+{
+  "definition": {
+    "name": "search_tasks",
+    "title": "Search tasks",
+    "description": "Search at most 20 tasks.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "maximum": 20
+        }
+      },
+      "required": [
+        "title"
+      ]
+    },
+    "annotations": {
+      "read_only": true
+    },
+    "endpoint": {
+      "path": "/api/search",
+      "method": "post",
+      "param_map": {
+        "title": "content"
+      }
+    },
+    "max_response_chars": 1500
+  },
+  "transport": {
+    "csrf": {
+      "source": "meta",
+      "name": "csrf-token",
+      "header": "X-CSRF-Token"
+    }
+  },
+  "expected": {
+    "name": "search_tasks",
+    "title": "Search tasks",
+    "description": "Search at most 20 tasks.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "maximum": 20
+        }
+      },
+      "required": [
+        "title"
+      ]
+    },
+    "annotations": {
+      "readOnlyHint": true
+    },
+    "endpoint": {
+      "path": "/api/search",
+      "method": "POST",
+      "paramMap": {
+        "title": "content"
+      }
+    },
+    "maxResponseChars": 1500,
+    "fingerprint": "sha256:e5a40c0528a542f096bd4bd58ffeac911f009d5d48d67013595906b7e86a1f08"
+  }
+}

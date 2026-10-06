@@ -1,0 +1,50 @@
+{
+  "definition": {
+    "name": "escape_probe",
+    "description": "Find </ScRiPt> & <!-- notes 한글 \u001f tab\b end",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "q": {
+          "type": "string",
+          "description": "검색어 <b>&</b>"
+        }
+      }
+    },
+    "annotations": {
+      "read_only": true
+    },
+    "endpoint": {
+      "path": "/api/search",
+      "method": "get"
+    }
+  },
+  "transport": {
+    "csrf": {
+      "source": "meta",
+      "name": "csrf-token",
+      "header": "X-CSRF-Token"
+    }
+  },
+  "expected": {
+    "name": "escape_probe",
+    "description": "Find </ScRiPt> & <!-- notes 한글 \u001f tab\b end",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "q": {
+          "type": "string",
+          "description": "검색어 <b>&</b>"
+        }
+      }
+    },
+    "annotations": {
+      "readOnlyHint": true
+    },
+    "endpoint": {
+      "path": "/api/search",
+      "method": "GET"
+    },
+    "fingerprint": "sha256:e2e6e6650c07d308c89a242c69439ff03c3cf83e258a2f951df22e25ce8d1885"
+  }
+}

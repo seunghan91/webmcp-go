@@ -1,0 +1,52 @@
+{
+  "definition": {
+    "name": "list_tasks",
+    "description": "List tasks tagged by the user.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "annotations": {
+      "read_only": true,
+      "untrusted_content": true
+    },
+    "endpoint": {
+      "path": "/api/tasks",
+      "method": "get",
+      "array_format": "brackets"
+    }
+  },
+  "transport": {},
+  "expected": {
+    "name": "list_tasks",
+    "description": "List tasks tagged by the user.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "untrustedContentHint": true
+    },
+    "endpoint": {
+      "path": "/api/tasks",
+      "method": "GET",
+      "arrayFormat": "brackets"
+    },
+    "fingerprint": "sha256:5507520a0c34b5f1e028a4a76e2b68e1a6cacbc12b3f1c9eadc2d6ef42b143d6"
+  }
+}
