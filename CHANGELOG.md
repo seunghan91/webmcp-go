@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 — 2026-10-06
+
+- Documentation: README leads with what the module does, install, status and the four-package family; badges and CI. No code changes.
+
 ## 0.2.0 — 2026-10-06
 
 - Add validated immutable tool definitions, explicit page-selected registries and

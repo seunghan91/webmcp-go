@@ -9,7 +9,7 @@ import (
 )
 
 // Version is this package's release version.
-const Version = "0.2.0"
+const Version = "0.2.1"
 
 // Annotations accepts only read_only, untrusted_content, consequential, debugging.
 // False hints are omitted from manifests. Hints are not security controls.

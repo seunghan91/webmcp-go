@@ -1,6 +1,42 @@
 # webmcp-go
 
-0.2.0 · Spec baseline: **WebMCP Draft CG Report 2026-10-02** · Go 1.22+ · Standard library only. Browser test target: Chrome 154 (live verification pending). Go unit results do not establish browser, CSP or production compatibility.
+[![Go Reference](https://pkg.go.dev/badge/github.com/seunghan91/webmcp-go.svg)](https://pkg.go.dev/github.com/seunghan91/webmcp-go) [![CI](https://github.com/seunghan91/webmcp-go/actions/workflows/ci.yml/badge.svg)](https://github.com/seunghan91/webmcp-go/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Server-side WebMCP toolkit for Go `net/http` — standard library only.
+
+[WebMCP](https://github.com/webmachinelearning/webmcp) is a W3C Community Group
+proposal that lets a web page register tools an in-browser AI agent can call
+through `document.modelContext`. This module is the server side of that: you define
+tools where your app already knows its routes, sessions and permissions, and a
+small browser runtime registers them on the pages you choose. When an agent calls
+a tool, the runtime calls your existing same-origin endpoint with the user's
+session and CSRF token, so authentication and authorization stay in your app.
+
+- **Tool definitions** — `NewTool` and `NewRegistry`, validated against the spec's naming, annotation and schema rules.
+- **Manifests** — `Registry.Manifest(names...)` for per-page opt-in and `Manifest.ScriptTag` for script-safe embedding in `html/template`.
+- **Browser runtime** — embedded with `embed`; serve it with `RuntimeHandler()` and reference it with `RuntimeScriptTag` (CSP nonce aware).
+- **Declarative forms** — `FormAttrs` and `ParamAttr` for `toolname`, `tooldescription`, `toolautosubmit`, `toolparamdescription`.
+- **Origin Trial** — `OriginTrial` / `OriginTrialWithOptions` middleware and `OriginTrialMetaTag`.
+
+```sh
+go get github.com/seunghan91/webmcp-go@latest
+```
+
+**Status:** 0.x, tracking the WebMCP Draft CG Report of 2026-10-02. WebMCP runs
+behind a Chrome origin trial (Chrome 149–156, extension requested to 162) or the
+`chrome://flags/#enable-webmcp-testing` flag. The shared runtime is tested in real
+Chrome 154 by the [Ruby reference suite](https://github.com/seunghan91/webmcp/blob/main/test/integration/RESULTS.md)
+(CSRF-protected writes, blocked redirects, HTTP errors, Turbo navigation, strict CSP).
+
+| Language | Package | Registry |
+|---|---|---|
+| Ruby / Rails (reference) | [`webmcp`](https://github.com/seunghan91/webmcp) | [RubyGems](https://rubygems.org/gems/webmcp) |
+| Go (`net/http`) | [`webmcp-go`](https://github.com/seunghan91/webmcp-go) | [pkg.go.dev](https://pkg.go.dev/github.com/seunghan91/webmcp-go) |
+| Python / Django | [`webmcp-django`](https://github.com/seunghan91/webmcp-django) | [PyPI](https://pypi.org/project/webmcp-django/) |
+| Rust | [`webmcp`](https://github.com/seunghan91/webmcp-rust) | [crates.io](https://crates.io/crates/webmcp) |
+
+All four emit the same manifest v1 (checked against shared conformance fixtures,
+fingerprints included) and ship the byte-identical browser runtime.
 
 ## Intent: share identity, project the rest explicitly
 
@@ -249,8 +285,9 @@ Go's `url.Values`. Set `Endpoint.ArrayFormat: "brackets"` for endpoints expectin
 No cross-origin exposure, automatic response truncation, or MCP SDK bridge is
 provided. A `from_mcp`-style projection exists in the Ruby reference and is planned
 for Go; this phase defines browser tools explicitly and adds no SDK dependency.
-The spec and Origin Trial can change. Live browser/CSP verification remains
-outside this Go implementation's validation results.
+The spec and Origin Trial can change. Real-browser and CSP checks run against the
+shared runtime in the Ruby reference suite; Go tests cover definitions, manifests,
+escaping, middleware and the embedded runtime bytes.
 
 Sibling packages: [Ruby](https://github.com/seunghan91/webmcp),
 [Go](https://github.com/seunghan91/webmcp-go),
